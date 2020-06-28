@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
@@ -25,12 +26,14 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +82,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
+    public ThreeTrackingWheelLocalizer myLocalizer;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
@@ -114,10 +119,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         // upward (normal to the floor) using a command like the following:
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "fL");
+        leftRear = hardwareMap.get(DcMotorEx.class, "rL");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rR");
+        rightFront = hardwareMap.get(DcMotorEx.class, "fR");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -138,9 +143,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        myLocalizer = new StandardTrackingWheelLocalizer(hardwareMap);
+        setLocalizer(myLocalizer);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -268,7 +277,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             }
         }
 
-        dashboard.sendTelemetryPacket(packet);
+        //dashboard.sendTelemetryPacket(packet);
     }
 
     public void waitForIdle() {
@@ -314,6 +323,14 @@ public class SampleMecanumDrive extends MecanumDrive {
             wheelPositions.add(encoderTicksToInches(motor.getCurrentPosition()));
         }
         return wheelPositions;
+    }
+
+    public List<Integer> getRaw() {
+        List<Integer> raw = new ArrayList<>();
+        for (DcMotorEx motor : motors) {
+            raw.add(motor.getCurrentPosition());
+        }
+        return raw;
     }
 
     public List<Double> getWheelVelocities() {
