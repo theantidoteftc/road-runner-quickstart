@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.config.variable.CustomVariable;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.kinematics.Kinematics;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
@@ -21,7 +22,9 @@ import android.util.Log;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 
 @Config
 @Autonomous(group = "drive")
@@ -141,8 +144,9 @@ public class FeedForwardTuner2 extends LinearOpMode {
             }
 
             MotionState motionState = activeProfile.get(profileTime);
-            double targetPower = kV * motionState.getV();
+            double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
             drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+            drive.update();
 
             TelemetryPacket packet = new TelemetryPacket();
 
@@ -152,8 +156,8 @@ public class FeedForwardTuner2 extends LinearOpMode {
             Log.e("NOAHISAWESOME", Boolean.toString(drive.myLocalizer == null));
             Log.e("NOAHISAWESOME", Boolean.toString(drive.myLocalizer.getPoseVelocity() == null));
 
-            Pose2d poseVelo = drive.myLocalizer.getPoseVelocity();
-            double velo = Math.hypot(poseVelo.getX(), poseVelo.getY());
+            Pose2d poseVelo = drive.getPoseVelocity();
+            double velo = poseVelo.getX();
             packet.put("poseVelocity", velo);
             packet.put("error", motionState.getV() - velo);
 
