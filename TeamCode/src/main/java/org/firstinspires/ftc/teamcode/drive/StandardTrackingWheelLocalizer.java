@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double MULTIPLIER_FORWARD = 1.002123993327; //fudging woooooo
     public static double MULTIPLIER_SIDEWAYS = 1.000791754896;
 
-    private DcMotor leftEncoder, rightEncoder, frontEncoder;
+    private DcMotorEx leftEncoder, rightEncoder, frontEncoder;
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -46,9 +47,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = hardwareMap.dcMotor.get("fL");
-        rightEncoder = hardwareMap.dcMotor.get("fR");
-        frontEncoder = hardwareMap.dcMotor.get("rR"); //reversed
+        leftEncoder = hardwareMap.get(DcMotorEx.class,"fL");
+        rightEncoder = hardwareMap.get(DcMotorEx.class,"fR");
+        frontEncoder = hardwareMap.get(DcMotorEx.class,"rR"); //reversed
     }
 
     public static double encoderTicksToInches(int ticks) {
@@ -62,6 +63,20 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 encoderTicksToInches(leftEncoder.getCurrentPosition()) * MULTIPLIER_FORWARD,
                 encoderTicksToInches(rightEncoder.getCurrentPosition()) * MULTIPLIER_FORWARD,
                 encoderTicksToInches(frontEncoder.getCurrentPosition()) * MULTIPLIER_SIDEWAYS
+        );
+    }
+
+    public static double encoderTicksToInches(double ticks) {
+        return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
+    }
+
+    @NonNull
+    @Override
+    public List<Double> getWheelVelocities() {
+        return Arrays.asList(
+                encoderTicksToInches(leftEncoder.getVelocity()),
+                encoderTicksToInches(rightEncoder.getVelocity()),
+                encoderTicksToInches(frontEncoder.getVelocity())
         );
     }
 }
