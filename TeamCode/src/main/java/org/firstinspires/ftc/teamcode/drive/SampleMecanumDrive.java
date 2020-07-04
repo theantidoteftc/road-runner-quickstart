@@ -82,10 +82,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
+    public static double lateralMultiplier = 1;//.23487148;
+
     public ThreeTrackingWheelLocalizer myLocalizer;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
-        super(kV, kA, kStatic, TRACK_WIDTH);
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, lateralMultiplier);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);

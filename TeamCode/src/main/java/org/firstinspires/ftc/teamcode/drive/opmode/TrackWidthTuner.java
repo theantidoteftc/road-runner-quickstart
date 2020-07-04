@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
+import android.util.Log;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -64,11 +66,14 @@ public class TrackWidthTuner extends LinearOpMode {
                 headingAccumulator += Angle.norm(heading - lastHeading);
                 lastHeading = heading;
 
+                Log.i("CURRENTSBALL", Double.toString(Math.toDegrees(headingAccumulator)));
                 drive.update();
             }
 
             double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
             trackWidthStats.add(trackWidth);
+
+            Log.i("CURRENTSBALL", Double.toString(Math.toDegrees(headingAccumulator)));
 
             sleep(DELAY);
         }
