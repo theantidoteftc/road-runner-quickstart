@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning
+package org.firstinspires.ftc.teamcode.drive.opmode
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
@@ -7,12 +7,11 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.util.Angle
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.util.MovingStatistics
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
-import org.firstinspires.ftc.teamcode.tuning.DeadWheelTuner2.DeadWheelTuner2Settings.NUM_TURNS
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
+import org.firstinspires.ftc.teamcode.drive.opmode.DeadWheelTuner2.DeadWheelTuner2Settings.NUM_TURNS;
 
-@Autonomous//(name="Tuning - Dead Wheel Tuner 2")
+@Autonomous(name="Tuning - Dead Wheel Tuner 2")
 class DeadWheelTuner2 : LinearOpMode() {
     @Config
     object DeadWheelTuner2Settings {

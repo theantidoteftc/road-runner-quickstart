@@ -279,7 +279,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             }
         }
 
-        //dashboard.sendTelemetryPacket(packet);
+        dashboard.sendTelemetryPacket(packet);
     }
 
     public void waitForIdle() {

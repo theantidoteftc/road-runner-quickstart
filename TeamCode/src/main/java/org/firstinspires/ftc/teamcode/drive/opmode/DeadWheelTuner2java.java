@@ -6,12 +6,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import kotlin.jvm.JvmField;
 
-public class DeadWheelTuner2 extends LinearOpMode {
+@Autonomous
+public class DeadWheelTuner2java extends LinearOpMode {
 
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(this.hardwareMap);
@@ -21,7 +23,7 @@ public class DeadWheelTuner2 extends LinearOpMode {
             this.telemetry.clearAll();
             this.telemetry.addLine("Running...");
             this.telemetry.update();
-            drive.turn(Math.toRadians((double)360 * org.firstinspires.ftc.teamcode.tuning.DeadWheelTuner2.DeadWheelTuner2Settings.NUM_TURNS + (double)270));
+            drive.turn(Math.toRadians((double)360 * DeadWheelTuner2Settings.NUM_TURNS + (double)270));
             double imuHeadingAccumulator = 0.0D;
             double imuLastHeading = 0.0D;
             double deadWheelHeadingAccumulator = 0.0D;
@@ -50,13 +52,13 @@ public class DeadWheelTuner2 extends LinearOpMode {
     public static final class DeadWheelTuner2Settings {
         @JvmField
         public static double NUM_TURNS;
-        public static final DeadWheelTuner2.DeadWheelTuner2Settings INSTANCE;
+        public static final DeadWheelTuner2java.DeadWheelTuner2Settings INSTANCE;
 
         private DeadWheelTuner2Settings() {
         }
 
         static {
-            DeadWheelTuner2.DeadWheelTuner2Settings var0 = new DeadWheelTuner2.DeadWheelTuner2Settings();
+            DeadWheelTuner2java.DeadWheelTuner2Settings var0 = new DeadWheelTuner2java.DeadWheelTuner2Settings();
             INSTANCE = var0;
             NUM_TURNS = 10.0D;
         }
