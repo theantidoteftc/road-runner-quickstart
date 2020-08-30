@@ -54,9 +54,9 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
-
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(6, 0, 0);
+    public static double LATERAL_MULTIPLIER = 1.3114;
 
     public enum Mode {
         IDLE,
@@ -82,12 +82,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<DcMotorEx> motors;
     private BNO055IMU imu;
 
-    public static double lateralMultiplier = 1;//.23487148;
+    private Pose2d lastPoseOnTurn;
 
     public ThreeTrackingWheelLocalizer myLocalizer;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
-        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, lateralMultiplier);
+        super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -111,11 +111,12 @@ public class SampleMecanumDrive extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
+        //commented out to avoid IMU initialization
+        /*// TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
+        imu.initialize(parameters);*/
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
@@ -168,6 +169,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();
+        lastPoseOnTurn = getPoseEstimate();
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
@@ -248,6 +250,10 @@ public class SampleMecanumDrive extends MecanumDrive {
                         0, 0, targetAlpha
                 )));
 
+                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
+                fieldOverlay.setStroke("#4CAF50");
+                DashboardUtil.drawRobot(fieldOverlay, newPose);
+
                 if (t >= turnProfile.duration()) {
                     mode = Mode.IDLE;
                     setDriveSignal(new DriveSignal());
@@ -261,14 +267,14 @@ public class SampleMecanumDrive extends MecanumDrive {
                 Trajectory trajectory = follower.getTrajectory();
 
                 fieldOverlay.setStrokeWidth(1);
-                fieldOverlay.setStroke("4CAF50");
+                fieldOverlay.setStroke("#4CAF50");
                 DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
                 double t = follower.elapsedTime();
                 DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
 
                 fieldOverlay.setStroke("#3F51B5");
                 DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
-                DashboardUtil.drawRobot(fieldOverlay, currentPose);
+                //DashboardUtil.drawRobot(fieldOverlay, currentPose);
 
                 if (!follower.isFollowing()) {
                     mode = Mode.IDLE;
@@ -279,6 +285,8 @@ public class SampleMecanumDrive extends MecanumDrive {
             }
         }
 
+        fieldOverlay.setStroke("#3F51B5");
+        DashboardUtil.drawRobot(fieldOverlay, currentPose);
         dashboard.sendTelemetryPacket(packet);
     }
 
@@ -353,6 +361,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        return 0;
     }
 }

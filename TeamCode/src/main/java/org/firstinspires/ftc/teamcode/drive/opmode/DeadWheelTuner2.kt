@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode
 
+import android.util.Log
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.drive.opmode.DeadWheelTuner2.DeadWheelTuner2Settings.NUM_TURNS;
 
-@Autonomous(name="Tuning - Dead Wheel Tuner 2")
+@Autonomous(name="Tuning - Dead Wheel Tuner 2 Kotlin")
 class DeadWheelTuner2 : LinearOpMode() {
     @Config
     object DeadWheelTuner2Settings {
@@ -32,7 +33,7 @@ class DeadWheelTuner2 : LinearOpMode() {
         telemetry.addLine("Running...")
         telemetry.update()
 
-        drive.turn(Math.toRadians(360 * NUM_TURNS + 270))
+        drive.turnAsync(Math.toRadians(360 * NUM_TURNS + 270))
 
         var imuHeadingAccumulator = 0.0
         var imuLastHeading = 0.0
@@ -60,6 +61,11 @@ class DeadWheelTuner2 : LinearOpMode() {
             FtcDashboard.getInstance().sendTelemetryPacket(packet)
 
             drive.update()
+
+            Log.i("noahisthebest - imu", Math.toDegrees(imuHeadingAccumulator).toString())
+            Log.i("noahisthebest - local", Math.toDegrees(deadWheelHeadingAccumulator).toString())
+            Log.i("noahisthebest", "--------")
+
         }
     }
 

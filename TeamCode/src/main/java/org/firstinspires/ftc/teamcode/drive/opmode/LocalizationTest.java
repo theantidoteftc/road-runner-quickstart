@@ -76,7 +76,7 @@ public class LocalizationTest extends LinearOpMode {
             packet.put("imu", Math.toDegrees(drive.getRawExternalHeading()));
 
             Canvas fieldOverlay = packet.fieldOverlay();
-            fieldOverlay.setStroke("#00FFC6");
+            fieldOverlay.setStroke("#FF1A55");
             DashboardUtil.drawRobot(fieldOverlay, new Pose2d(estimate.getX(), estimate.getY(), estimate.getHeading()));
 
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
