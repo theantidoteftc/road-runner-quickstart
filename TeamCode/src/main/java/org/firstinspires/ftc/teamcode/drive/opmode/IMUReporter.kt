@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.drive.opmode
 import android.util.Log
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
 
 @Autonomous(name="IMU Reporter")
+@Disabled
 class IMUReporter : LinearOpMode() {
 
     override fun runOpMode() {

@@ -7,11 +7,13 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.util.Angle
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive
 import org.firstinspires.ftc.teamcode.util.DashboardUtil
 import org.firstinspires.ftc.teamcode.drive.opmode.DeadWheelTuner2.DeadWheelTuner2Settings.NUM_TURNS;
 
+@Disabled
 @Autonomous(name="Tuning - Dead Wheel Tuner 2 Kotlin")
 class DeadWheelTuner2 : LinearOpMode() {
     @Config
