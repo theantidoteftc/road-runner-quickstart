@@ -23,46 +23,59 @@ public class pulledoutofthinheir extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(-36, -60, Math.toRadians(90)));
 
         Trajectory Stone1 = drive.trajectoryBuilder(new Pose2d(-36.0, -61.0, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(-24.0,-36.0, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-24.0,-33.0, Math.toRadians(180)))
                 .build();
 
         Trajectory Foundation1 = drive.trajectoryBuilder(Stone1.end(), true)
-                .lineTo(new Vector2d(48, -36))
+                .splineToConstantHeading(new Vector2d(-8, -37),0)
+                .splineTo(new Vector2d(48, -33), 0)
                 .build();
 
         Trajectory Stone2 = drive.trajectoryBuilder(Foundation1.end())
-                .lineTo(new Vector2d(-32, -36.5))
+                .splineTo(new Vector2d(-8, -37), Math.toRadians(180))
+                .splineTo(new Vector2d(-48, -33), Math.toRadians(180))
                 .build();
 
         Trajectory Foundation2 = drive.trajectoryBuilder(Stone2.end(), true)
-                .lineTo(new Vector2d(48, -36))
+                .splineTo(new Vector2d(-8, -37), Math.toRadians(0))
+                .splineTo(new Vector2d(48, -33), Math.toRadians(0))
                 .build();
 
         Trajectory Stone3 = drive.trajectoryBuilder(Foundation2.end())
-                .lineTo(new Vector2d(-40, -37))
+                .splineTo(new Vector2d(-8, -37), Math.toRadians(180))
+                .splineTo(new Vector2d(-26.5, -28), Math.toRadians(135))
                 .build();
 
         Trajectory Foundation3 = drive.trajectoryBuilder(Stone3.end(), true)
-                .lineTo(new Vector2d(48, -37))
+                .splineTo(new Vector2d(0, -37), Math.toRadians(0))
+                .splineTo(new Vector2d(48, -33), Math.toRadians(90))
                 .build();
 
-        Trajectory Stone4 = drive.trajectoryBuilder(Foundation3.end())
-                .lineTo(new Vector2d(-48, -37.5))
+        Trajectory Stone4FoundationPull = drive.trajectoryBuilder(Foundation3.end())
+                .splineTo(new Vector2d(24, -48), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(0, -38), Math.toRadians(180))
+                .splineTo(new Vector2d(-34.5, -28), Math.toRadians(135))
                 .build();
 
-        Trajectory Foundation4 = drive.trajectoryBuilder(Stone4.end(), true)
-                .lineTo(new Vector2d(48, -37.5))
+        Trajectory Foundation4 = drive.trajectoryBuilder(Stone4FoundationPull.end(), true)
+                .splineTo(new Vector2d(18, -37), Math.toRadians(0))
                 .build();
 
-        Trajectory Park = drive.trajectoryBuilder(Foundation4.end(), true)
-                .lineTo(new Vector2d(0, -37.5))
+        Trajectory Stone5 = drive.trajectoryBuilder(Foundation4.end(), false)
+                .splineTo(new Vector2d(-50.5, -28), Math.toRadians(135))
                 .build();
 
-        /*Trajectory toFoundation = drive.trajectoryBuilder(toQuarry.end(), true)
-                .lineTo(new Vector2d(12, -36))
-                .splineTo(new Vector2d(48, -36), Math.toRadians(90))
-                .lineTo(new Vector2d(48, -32))
-                .build();*/
+        Trajectory Foundation5 = drive.trajectoryBuilder(Stone5.end(), true)
+                .splineTo(new Vector2d(42, -37), Math.toRadians(0))
+                .build();
+
+        Trajectory Park = drive.trajectoryBuilder(Foundation5.end(), false)
+                .splineToConstantHeading(new Vector2d(0, -34), Math.toRadians(180))
+                .build();
+
+        Trajectory returnToHome = drive.trajectoryBuilder(Foundation3.end(), false)
+                .lineToSplineHeading(new Pose2d(-36,-60, Math.toRadians(90)))
+                .build();
 
         drive.followTrajectory(Stone1);
         drive.followTrajectory(Foundation1);
@@ -70,8 +83,11 @@ public class pulledoutofthinheir extends LinearOpMode {
         drive.followTrajectory(Foundation2);
         drive.followTrajectory(Stone3);
         drive.followTrajectory(Foundation3);
-        drive.followTrajectory(Stone4);
+        drive.followTrajectory(Stone4FoundationPull);
         drive.followTrajectory(Foundation4);
+        drive.followTrajectory(Stone5);
+        drive.followTrajectory(Foundation5);
         drive.followTrajectory(Park);
+        //drive.followTrajectory(returnToHome);
     }
 }
