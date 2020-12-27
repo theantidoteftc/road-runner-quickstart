@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
 @Config
-@Disabled
+//@Disabled
 @TeleOp(group = "drive")
 public class LocalizationTest extends LinearOpMode {
     public static double VX_WEIGHT = 1;
